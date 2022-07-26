@@ -20,7 +20,7 @@ class CreateMembersTable extends Migration
             $table->string('email');
             $table->string('alamat');
             $table->string('hp');
-            $table->string('profile_pic');
+            $table->string('profile_pic')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

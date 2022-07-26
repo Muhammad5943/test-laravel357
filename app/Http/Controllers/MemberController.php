@@ -5,19 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MemberRequest;
 use App\Models\Group;
 use App\Models\Member;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
-
-use function PHPUnit\Framework\isNull;
 
 class MemberController extends Controller
 {
-    private $memberCreated = "Berhasil membuat member";
-    private $memberRetrieved = "Berhasil mendapatkan semua member";
     private $memberUpdated = "Berhasil mengupdate member";
     private $memberDeleted = "Berhasil menghapus member";
+    private $memberCreated = "Berhasil memasukan member baru";
+    private $memberEmpty = "Tidak ada member di group ini";
 
     /**
      * Display a listing of the resource.
@@ -26,25 +21,23 @@ class MemberController extends Controller
      */
     public function index($group_id)
     {
-        // try {
+        try {
             $getAllMember = Member::where('group_id', $group_id)
                                         ->orderBy('created_at','desc')
                                         ->get();
 
-            // $getAllMembers = Member::where('group_id', $group_id)
-            //                             ->orderBy('created_at','desc')
-            //                             ->get()->map->groupBy('group_id');
             if (count($getAllMember) == 0) {
-                return redirect()->route('group')->with('success', 'Berhasil memasukan member baru');
+                return redirect()
+                        ->route('group')
+                        ->with('deleted', $this->memberEmpty);
             }
     
             return view('member.index', [
-                'members' => '$getAllMember'
+                'members' => $getAllMember
             ]);
-            // return apiReturn($getAllMember, $this->memberRetrieved);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function create($group_id)
@@ -61,8 +54,7 @@ class MemberController extends Controller
      */
     public function store(MemberRequest $request)
     {
-        // return $request->all();
-        // try {
+        try {
             if ($profilePic = $request->file('profile_pic'))
             {
                 $time = filter_var(microtime(true), FILTER_SANITIZE_NUMBER_INT);
@@ -80,11 +72,12 @@ class MemberController extends Controller
             $createMember->profile_pic = $fileName;
             $createMember->save();
 
-            return redirect()->route('group.member', $request->group_id)->with('success', 'Berhasil memasukan member baru');
-            // return apiCreated($createMember, $this->memberCreated);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+            return redirect()
+                    ->route('group.member', $request->group_id)
+                    ->with('success', $this->memberCreated);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -95,28 +88,24 @@ class MemberController extends Controller
      */
     public function getMemberById($member_id)
     {
-        // try {
+        try {
             $getMemberById = Member::where('id', $member_id)->first();
             if ($getMemberById == null) {
-                return response([
-                    'message' => "Member not found"
-                ], 404);
+                return redirect()->back();
             }
 
             $groupMember = Group::where('id', $getMemberById->group_id)->first();
             if ($groupMember == null) {
-                return response([
-                    'message' => "Group not found"
-                ], 404);
+                return redirect()->back();
             }
 
             return view('member.edit', [
                 'member' => $getMemberById,
                 'group_id' => $groupMember
             ]);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -127,23 +116,20 @@ class MemberController extends Controller
      */
     public function getMemberInGroup($group_id)
     {
-        // try {
+        try {
             $getMemberInGroup = Member::where('group_id', $group_id)
                                     ->orderBy('created_at','desc')
                                     ->get();
             if ($getMemberInGroup == null) {
-                return response([
-                    'message' => "Member not found"
-                ], 404);
+                return redirect()->back();
             }
 
             return view('member.index', [
                 'members' => $getMemberInGroup
             ]);
-            // return $getMemberInGroup;
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -155,13 +141,10 @@ class MemberController extends Controller
      */
     public function updateMemberById(MemberRequest $request, $member_id)
     {
-        // return "inside";
-        // try {
+        try {
             $memberById = Member::where('id', $member_id)->first();
             if ($memberById == null) {
-                return response([
-                    'message' => "Member not found"
-                ], 404);
+                return redirect()->back();
             }
 
             if ($request->hasFile('profile_pic')) {
@@ -185,7 +168,6 @@ class MemberController extends Controller
             $memberById->alamat = $request->alamat?$request->alamat:$memberById->alamat;
             $memberById->hp = $request->hp?$request->hp:$memberById->hp;
             $memberById->profile_pic = $request->file('profile_pic')?$fileName:$memberById->profile_pic;
-            // return $memberById;
             $memberById->update();
 
             $memberGroup = Group::where('id', $memberById->group_id)->first();
@@ -196,9 +178,9 @@ class MemberController extends Controller
             return redirect()
                     ->route('group.member', $memberGroup->id)
                     ->with('success', $this->memberUpdated);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -209,7 +191,7 @@ class MemberController extends Controller
      */
     public function destroy($member_id)
     {
-        // try {
+        try {
             $deleteMember = Member::where('id', $member_id)->first();
             if ($deleteMember == null) {
                 return response([
@@ -221,9 +203,9 @@ class MemberController extends Controller
             
             return redirect()
                 ->back()
-                ->with('delete', 'Berhasil menghapus Member');
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+                ->with('delete', $this->memberDeleted);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

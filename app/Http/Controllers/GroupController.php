@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GroupRequest;
 use App\Models\Group;
 use App\Models\Member;
+use Error;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -18,23 +19,18 @@ class GroupController extends Controller
      */
     public function index()
     {
-        // try {
-            $getAllGroup = Group::with('members')->orderBy('created_at','desc')->get();
+        try {
+            $getAllGroup = Group::with('members')->orderBy('created_at','desc')->paginate(10);
             if (count($getAllGroup) == 0) {
-                return response([
-                    'message' => "Group not found"
-                ], 404);
+                return view('group.index');
             }
-
-            // return count($getAllGroup->members);
 
             return view('group.index', [
                 'groups' => $getAllGroup
             ]);
-            // return apiReturn($getAllGroup);
-        // } catch (\Throwable $th) {
-        //     throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw new Error($th);
+        }
     }
 
     public function create()
@@ -50,17 +46,16 @@ class GroupController extends Controller
      */
     public function store(GroupRequest $request)
     {
-        // try {
+        try {
             $createGroup = new Group;
             $createGroup->namagroup = $request->namagroup;
             $createGroup->kota = $request->kota;
             $createGroup->save();
 
             return redirect()->route('group')->with('success', 'Membuat group '.$createGroup->namagroup);
-            return apiCreated($createGroup, $this->groupCreated);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw new Error($th);
+        }
     }
 
     /**
@@ -71,7 +66,7 @@ class GroupController extends Controller
      */
     public function show($group_id)
     {
-        // try {
+        try {
             $getGroupById = Group::where('id', $group_id)->first();
             if ($getGroupById == null) {
                 return response([
@@ -82,9 +77,9 @@ class GroupController extends Controller
             return view('group.edit',[
                 'getGroupById' => $getGroupById
             ]);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw new Error($th);
+        }
     }
 
     /**
@@ -95,7 +90,7 @@ class GroupController extends Controller
      */
     public function getMemberInGroup($group_id)
     {
-        // try {
+        try {
             $getGroupById = Group::where('id', $group_id)->first();
             if ($getGroupById == null) {
                 return response([
@@ -105,7 +100,7 @@ class GroupController extends Controller
             
             $getMemberInGroup = Member::where('group_id', $group_id)
                                     ->orderBy('created_at','desc')
-                                    ->get();
+                                    ->paginate(10);
 
             // if (count($getMemberInGroup) == 0) {
             //     return redirect()->route('group.member', [
@@ -117,9 +112,9 @@ class GroupController extends Controller
                 'members' => $getMemberInGroup,
                 'group_id' => $group_id
             ]);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw new Error($th);
+        }
     }
 
     /**
@@ -131,12 +126,10 @@ class GroupController extends Controller
      */
     public function updateGroupById(GroupRequest $request, $group_id)
     {
-        // try {
+        try {
             $findGroupById = Group::where('id', $group_id)->first();
             if ($findGroupById == null) {
-                return response([
-                    'message' => "Group not found"
-                ], 404);
+                return redirect()->route('group.member', $group_id)->with('success', 'Berhasil mengupdate group '. $findGroupById->namagroup);
             }
             
             $findGroupById->namagroup = $request->namagroup ? $request->namagroup : $findGroupById->namagroup;
@@ -144,9 +137,9 @@ class GroupController extends Controller
             $findGroupById->update();
 
             return redirect()->route('group')->with('success', 'Berhasil mengupdate group '. $findGroupById->namagroup);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw new Error($th);
+        }
     }
 
     /**
@@ -157,7 +150,7 @@ class GroupController extends Controller
      */
     public function destroy($group_id)
     {
-        // try {
+        try {
             $findGroupById = Group::where('id', $group_id)->first();
             if ($findGroupById == null) {
                 return response([
@@ -168,8 +161,8 @@ class GroupController extends Controller
             $findGroupById->delete();
     
             return redirect()->route('group')->with('delete', 'Berhasil menghapus group '. $findGroupById->namagroup);
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        } catch (\Throwable $th) {
+            throw new Error($th);
+        }
     }
 }

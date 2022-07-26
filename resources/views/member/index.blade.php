@@ -4,17 +4,12 @@
     <h1 class="mb-3 text-md-center text-sm-center text-lg-center">All Member on Group Here</h1>
 
     <div class="bg-light p-4 rounded">
-        <div class="d-flex">
-            <div>
-                <h2>
-                    <a href="{{ route('group') }}">
-                        <i class="fa fa-home" style="font-size:48px;"></i>
-                    </a> Members
-                </h2>
-            </div>
-            <div>
-                
-            </div>
+        <div class="col-md-3">
+            <h2>
+                <a href="{{ route('group') }}">
+                    <i class="fa fa-home" style="font-size:48px;"></i>
+                </a> Members
+            </h2>
         </div>
         <div class="lead">
             Manage your member here
@@ -45,35 +40,39 @@
                 <th width="3%" colspan="3">Action</th>
             </tr>
 
-            @foreach ($members as $key => $member)
-                <tr>
-                    <td>{{ $key+1 }}</td>
-                    <td>{{ $member->nama }}</td>
-                    <td>{{ $member->email }}</td>
-                    <td>{{ $member->alamat }}</td>
-                    <td>{{ $member->hp }}</td>
-                    <td>
-                        @if ($member->profile_pic != null)
-                            <img class="img-product" width="80" height="80" src="{{ asset('/storage/images/photo/'.$member->profile_pic)}}"
-                                alt="Pic">
-                        @else
-                            <img class="img-product" width="80" height="80" src="{{ asset('/assets/img/no_pic.jpg') }}"
-                                alt="Pic">
-                        @endif
-                    </td>
-                    <td>
-                        <a class="btn btn-warning btn-sm" href="{{ route('member.show', $member->id) }}">Edit</a>
-                    </td>
-                    <td>
-                        <a class="btn btn-danger btn-sm" href="{{ route('member.destroy', $member->id) }}">Delete</a>
-                    </td>
-                </tr>
-            @endforeach
+            @isset($members)
+                @foreach ($members as $key => $member)
+                    <tr>
+                        <td>{{ $members->firstItem() + $key }}</td>
+                        <td>{{ $member->nama }}</td>
+                        <td>{{ $member->email }}</td>
+                        <td>{{ $member->alamat }}</td>
+                        <td>{{ $member->hp }}</td>
+                        <td>
+                            @if ($member->profile_pic != null)
+                                <img class="img-product" width="80" height="80" src="{{ asset('/storage/images/photo/'.$member->profile_pic)}}"
+                                    alt="Pic">
+                            @else
+                                <img class="img-product" width="80" height="80" src="{{ asset('/assets/img/no_pic.jpg') }}"
+                                    alt="Pic">
+                            @endif
+                        </td>
+                        <td>
+                            <a class="btn btn-warning btn-sm" href="{{ route('member.show', $member->id) }}">Edit</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger btn-sm" href="{{ route('member.destroy', $member->id) }}">Delete</a>
+                        </td>
+                    </tr>
+                @endforeach
+            @endisset
         </table>
 
-        {{-- <div class="d-flex">
-            {!! $posts->links() !!}
-        </div> --}}
+        @isset($members)
+            <div class="d-flex">
+                {!! $members->links() !!}
+            </div>
+        @endisset
 
     </div>
 @endsection

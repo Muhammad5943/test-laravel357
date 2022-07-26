@@ -10,6 +10,16 @@ class Group extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'namagroup',
+        'kota',
+    ];
+
     public function members()
     {
         return $this->hasMany(Member::class);

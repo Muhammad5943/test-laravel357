@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,3 +45,9 @@ Route::prefix('/group')->group(function () {
     Route::put('/group_id={group_id}', [GroupController::class, 'updateGroupById'])->name('group.update');
     Route::get('/group_id={group_id}/delete', [GroupController::class, 'destroy'])->name('group.destroy');
 });
+
+/**
+ * import excel/csv
+ */
+Route::post('import', [MyController::class, 'import'])->name('import');
+Route::post('import/group', [MyController::class, 'importGroup'])->name('import.group');
