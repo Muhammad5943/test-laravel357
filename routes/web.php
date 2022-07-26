@@ -23,12 +23,13 @@ Route::get('/', function () {
  * member
  */
 Route::prefix('/member')->group(function () {
-    Route::get('/group_id={group_id}', [MemberController::class, 'index'])->name('members');
-    Route::post('/', [MemberController::class, 'store'])->name('createMember');
-    Route::get('/member_id={member_id}', [MemberController::class, 'getMemberById'])->name('showMember');
-    Route::get('/group_id={group_id}', [MemberController::class, 'getMemberInGroup'])->name('memberInGroup');
-    Route::put('/member_id={member_id}', [MemberController::class, 'updateMemberById'])->name('updateMember');
-    Route::delete('/member_id={member_id}', [MemberController::class, 'destroy'])->name('destroyMember');
+    // Route::get('/group_id={group_id}', [MemberController::class, 'index']); -- not used
+    Route::post('/', [MemberController::class, 'store'])->name('store.member');
+    Route::put('/member_id={member_id}', [MemberController::class, 'updateMemberById'])->name('member.update');
+    Route::get('/member_id={member_id}/delete', [MemberController::class, 'destroy'])->name('member.destroy');
+    Route::get('/member_id={member_id}/show', [MemberController::class, 'getMemberById'])->name('member.show');
+    Route::get('/group_id={group_id}/create', [MemberController::class, 'create'])->name('member.create');
+    // Route::get('/group_id={group_id}', [MemberController::class, 'getMemberInGroup'])->name('member.group');
 });
 
 /**
@@ -38,7 +39,7 @@ Route::prefix('/group')->group(function () {
     Route::get('/', [GroupController::class, 'index'])->name('group');
     Route::post('/', [GroupController::class, 'store'])->name('createGroup');
     Route::get('/group_id={group_id}', [GroupController::class, 'show'])->name('showGroup');
-    Route::get('/group_id={group_id}/member', [GroupController::class, 'getMemberInGroup'])->name('memberInGroup');
+    Route::get('/group_id={group_id}/member', [GroupController::class, 'getMemberInGroup'])->name('member.group');
     Route::put('/group_id={group_id}', [GroupController::class, 'updateGroupById'])->name('updateGroup');
     Route::delete('/group_id={group_id}', [GroupController::class, 'destroy'])->name('destroyGroup');
 });

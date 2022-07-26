@@ -19,14 +19,19 @@ class GroupController extends Controller
     public function index()
     {
         // try {
-            $getAllGroup = Group::orderBy('created_at','desc')->get();
+            $getAllGroup = Group::with('members')->orderBy('created_at','desc')->get();
             if (count($getAllGroup) == 0) {
                 return response([
                     'message' => "Group not found"
                 ], 404);
             }
 
-            return apiReturn($getAllGroup);
+            // return count($getAllGroup->members);
+
+            return view('group.index', [
+                'groups' => $getAllGroup
+            ]);
+            // return apiReturn($getAllGroup);
         // } catch (\Throwable $th) {
         //     throw $th;
         // }
@@ -94,11 +99,13 @@ class GroupController extends Controller
                                     ->orderBy('created_at','desc')
                                     ->get();
             if (count($getMemberInGroup) == 0) {
-                return response([
-                    'message' => "Member not found"
-                ], 404);
+                return redirect()->route('group')->with('success', 'Member group '.$getGroupById->namagroup.' telah kosong');
             }
-            return $getMemberInGroup;
+
+            return view('member.index', [
+                'members' => $getMemberInGroup,
+                'group_id' => $group_id
+            ]);
         // } catch (\Throwable $th) {
         //     //throw $th;
         // }
