@@ -4,7 +4,18 @@
     <h1 class="mb-3 text-md-center text-sm-center text-lg-center">All Member on Group Here</h1>
 
     <div class="bg-light p-4 rounded">
-        <h2>Members</h2>
+        <div class="d-flex">
+            <div>
+                <h2>
+                    <a href="{{ route('group') }}">
+                        <i class="fa fa-home" style="font-size:48px;"></i>
+                    </a> Members
+                </h2>
+            </div>
+            <div>
+                
+            </div>
+        </div>
         <div class="lead">
             Manage your member here
             <a href="{{ route('member.create', $group_id) }}" class="btn btn-primary btn-sm float-right">Add member</a>

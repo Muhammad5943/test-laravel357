@@ -37,6 +37,11 @@ class GroupController extends Controller
         // }
     }
 
+    public function create()
+    {
+        return view('group.create');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -51,6 +56,7 @@ class GroupController extends Controller
             $createGroup->kota = $request->kota;
             $createGroup->save();
 
+            return redirect()->route('group')->with('success', 'Membuat group '.$createGroup->namagroup);
             return apiCreated($createGroup, $this->groupCreated);
         // } catch (\Throwable $th) {
         //     //throw $th;
@@ -73,7 +79,9 @@ class GroupController extends Controller
                 ], 404);
             }
     
-            return $getGroupById;
+            return view('group.edit',[
+                'getGroupById' => $getGroupById
+            ]);
         // } catch (\Throwable $th) {
         //     //throw $th;
         // }
@@ -98,9 +106,12 @@ class GroupController extends Controller
             $getMemberInGroup = Member::where('group_id', $group_id)
                                     ->orderBy('created_at','desc')
                                     ->get();
-            if (count($getMemberInGroup) == 0) {
-                return redirect()->route('group')->with('success', 'Member group '.$getGroupById->namagroup.' telah kosong');
-            }
+
+            // if (count($getMemberInGroup) == 0) {
+            //     return redirect()->route('group.member', [
+            //         'group_id' => $group_id
+            //     ])->with('delete', 'Member group '.$getGroupById->namagroup.' telah kosong');
+            // }
 
             return view('member.index', [
                 'members' => $getMemberInGroup,
@@ -132,7 +143,7 @@ class GroupController extends Controller
             $findGroupById->kota = $request->kota ? $request->kota : $findGroupById->kota;
             $findGroupById->update();
 
-            return apiUpdated($findGroupById);
+            return redirect()->route('group')->with('success', 'Berhasil mengupdate group '. $findGroupById->namagroup);
         // } catch (\Throwable $th) {
         //     //throw $th;
         // }
@@ -156,7 +167,7 @@ class GroupController extends Controller
 
             $findGroupById->delete();
     
-            return apiReturn($findGroupById);
+            return redirect()->route('group')->with('delete', 'Berhasil menghapus group '. $findGroupById->namagroup);
         // } catch (\Throwable $th) {
         //     //throw $th;
         // }

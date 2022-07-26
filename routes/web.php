@@ -29,7 +29,7 @@ Route::prefix('/member')->group(function () {
     Route::get('/member_id={member_id}/delete', [MemberController::class, 'destroy'])->name('member.destroy');
     Route::get('/member_id={member_id}/show', [MemberController::class, 'getMemberById'])->name('member.show');
     Route::get('/group_id={group_id}/create', [MemberController::class, 'create'])->name('member.create');
-    // Route::get('/group_id={group_id}', [MemberController::class, 'getMemberInGroup'])->name('member.group');
+    // Route::get('/group_id={group_id}', [MemberController::class, 'getMemberInGroup'])->name('member.group'); -- not used
 });
 
 /**
@@ -37,9 +37,10 @@ Route::prefix('/member')->group(function () {
  */
 Route::prefix('/group')->group(function () {
     Route::get('/', [GroupController::class, 'index'])->name('group');
-    Route::post('/', [GroupController::class, 'store'])->name('createGroup');
-    Route::get('/group_id={group_id}', [GroupController::class, 'show'])->name('showGroup');
-    Route::get('/group_id={group_id}/member', [GroupController::class, 'getMemberInGroup'])->name('member.group');
-    Route::put('/group_id={group_id}', [GroupController::class, 'updateGroupById'])->name('updateGroup');
-    Route::delete('/group_id={group_id}', [GroupController::class, 'destroy'])->name('destroyGroup');
+    Route::post('/', [GroupController::class, 'store'])->name('group.store');
+    Route::get('/create', [GroupController::class, 'create'])->name('group.create');
+    Route::get('/group_id={group_id}', [GroupController::class, 'show'])->name('group.show');
+    Route::get('/group_id={group_id}/member', [GroupController::class, 'getMemberInGroup'])->name('group.member');
+    Route::put('/group_id={group_id}', [GroupController::class, 'updateGroupById'])->name('group.update');
+    Route::get('/group_id={group_id}/delete', [GroupController::class, 'destroy'])->name('group.destroy');
 });

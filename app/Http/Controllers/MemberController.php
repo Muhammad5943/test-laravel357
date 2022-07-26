@@ -80,7 +80,7 @@ class MemberController extends Controller
             $createMember->profile_pic = $fileName;
             $createMember->save();
 
-            return redirect()->route('memberInGroup', $request->group_id)->with('success', 'Berhasil memasukan member baru');
+            return redirect()->route('group.member', $request->group_id)->with('success', 'Berhasil memasukan member baru');
             // return apiCreated($createMember, $this->memberCreated);
         // } catch (\Throwable $th) {
         //     //throw $th;
@@ -194,7 +194,7 @@ class MemberController extends Controller
             }
 
             return redirect()
-                    ->route('member.group', $memberGroup->id)
+                    ->route('group.member', $memberGroup->id)
                     ->with('success', $this->memberUpdated);
         // } catch (\Throwable $th) {
         //     //throw $th;

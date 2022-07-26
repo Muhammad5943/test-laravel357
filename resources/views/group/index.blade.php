@@ -7,7 +7,7 @@
         <h2>Posts</h2>
         <div class="lead">
             Manage your posts here.
-            <a href="#" class="btn btn-primary btn-sm float-right">Add post</a>
+            <a href="{{ route('group.create') }}" class="btn btn-primary btn-sm float-right">Add Group</a>
         </div>
         
         <div class="mt-2">
@@ -37,18 +37,15 @@
                     <td>{{ $group->namagroup }}</td>
                     <td>{{ $group->kota }}</td>
                     <td>
-                        {{-- <a class="btn btn-info btn-sm" href="#">Member</a> --}}
-                        <a class="btn btn-info btn-sm" href="{{ route('member.group', $group->id) }}">Member</a>
+                        <a class="btn btn-info btn-sm" href="{{ route('group.member', $group->id) }}">Member</a>
                     </td>
                     <td>
-                        <a class="btn btn-warning btn-sm" href="#">Edit</a>
-                        {{-- <a class="btn btn-info btn-sm" href="{{ route('posts.show', $post->id) }}">Show</a> --}}
+                        <a class="btn btn-warning btn-sm" href="{{ route('group.show', $group->id) }}">Edit</a>
                     </td>
                     
                     @if (count($group->members) == 0)
                         <td>
-                            <a class="btn btn-danger btn-sm" href="#">Delete</a>
-                            {{-- <a class="btn btn-primary btn-sm" href="{{ route('posts.edit', $post->id) }}">Delete</a> --}}
+                            <a class="btn btn-danger btn-sm" href="{{ route('group.destroy', $group->id) }}">Delete</a>
                         </td>
                     @endif
                 </tr>
